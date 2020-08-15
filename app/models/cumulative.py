@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+from pydantic.main import BaseModel
 
 
 class Cumulative(BaseModel):
@@ -11,7 +12,7 @@ class Cumulative(BaseModel):
 
     mainboard_serialnumber: str
 
-    log_time: str
+    log_time: str = Field(..., title="记录时间")
     cumulative_heat_time: int
     cumulative_heat_water: int
     cumulative_duration_machine: int
