@@ -15,9 +15,7 @@ def get_day_first(serial_number: str, log_time: str) -> Cumulative:
     """
 
     collection = water_heater.get_cumulative_collection()
-    # client = MongoClient('mongodb://admin:Molan%402019@118.31.35.17:27017/')
-    # db = client.get_database('water_heater')
-    # collection = db.get_collection('equipment_cumulative')
+
     filter = {
         'device_serialnumber': serial_number,
         'log_time': {
@@ -25,6 +23,32 @@ def get_day_first(serial_number: str, log_time: str) -> Cumulative:
         }
     }
     sort = [('log_time', 1)]
+    data = collection.find_one(filter, sort=sort)
+
+    if data is None:
+        return None
+    else:
+        cum = Cumulative(**data)
+        return cum
+
+
+def get_day_last(serial_number: str, log_time: str) -> Cumulative:
+    """获取设备当日最后一条累积记录
+
+    :Parameters:
+        - `serial_number`: 设备序列号.
+        - `log_time`: 日志时间.
+    """
+
+    collection = water_heater.get_cumulative_collection()
+
+    filter = {
+        'device_serialnumber': serial_number,
+        'log_time': {
+            '$lte': log_time
+        }
+    }
+    sort = [('log_time', -1)]
     data = collection.find_one(filter, sort=sort)
 
     if data is None:
