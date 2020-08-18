@@ -1,16 +1,14 @@
-from pydantic import Field
-from pydantic.main import BaseModel
+from pydantic import Field, BaseModel
 
 
 class Cumulative(BaseModel):
-    """
+    '''
     热水器累积数据
-    """
+    '''
 
-    # 设备序列号
     device_serialnumber: str = Field(..., title="设备序列号")
 
-    mainboard_serialnumber: str
+    mainboard_serialnumber: str = Field(..., title="主板序列号")
 
     log_time: str = Field(..., title="记录时间")
     cumulative_heat_time: int
