@@ -101,4 +101,4 @@ def daily_process(log_time: str) -> None:
             print('date: %s, equipment: %s is extract and save' %
                   (log_time, item.device_serialnumber))
 
-    print('daily process finish')
+    print('cumulative biz daily process finish')

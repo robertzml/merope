@@ -1,6 +1,8 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
 
-RUN pip install pymongo
+COPY requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt
 
 EXPOSE 80
 

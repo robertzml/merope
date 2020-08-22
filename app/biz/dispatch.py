@@ -2,10 +2,11 @@
 定时任务调度
 """
 
-from datetime import datetime
+import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+from app import biz
 
 jobstores = {"default": MemoryJobStore()}
 
@@ -26,10 +27,23 @@ def tick():
     print("This time is: %s" % datetime.now())
 
 
-def start_job():
+def daily():
+    """处理前一天累积值
+    """
+    print("start daily process")
+
+    prev = datetime.date.today() - datetime.timedelta(days=1)
+    print("prev date is: %s" % prev.__format__("%Y-%m-%d"))
+    # biz.cumulative.daily_process()
+
+    print("finish daily process")
+    return
+
+
+def start_job(hour: int, minute: int):
     """启动定时任务
     """
-    scheduler.add_job(tick, "cron", id="timer", hour=20, minute=4)
+    scheduler.add_job(daily, "cron", id="timer", hour=hour, minute=minute)
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
