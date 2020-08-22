@@ -4,6 +4,7 @@
 
 from app.models.cumulative import Cumulative
 from app.db import water_heater
+from . import equipment
 
 
 def get_day_first(serial_number: str, log_time: str) -> Cumulative:
@@ -16,10 +17,14 @@ def get_day_first(serial_number: str, log_time: str) -> Cumulative:
 
     collection = water_heater.get_cumulative_collection()
 
+    end = log_time + ' 23:59:59'
+    start = log_time + ' 00:00:00'
+
     filter = {
         'device_serialnumber': serial_number,
         'log_time': {
-            '$gte': log_time
+            '$gte': start,
+            '$lte': end
         }
     }
     sort = [('log_time', 1)]
@@ -42,10 +47,14 @@ def get_day_last(serial_number: str, log_time: str) -> Cumulative:
 
     collection = water_heater.get_cumulative_collection()
 
+    end = log_time + ' 23:59:59'
+    start = log_time + ' 00:00:00'
+
     filter = {
         'device_serialnumber': serial_number,
         'log_time': {
-            '$lte': log_time
+            '$gte': start,
+            '$lte': end
         }
     }
     sort = [('log_time', -1)]
@@ -75,3 +84,21 @@ def save_to_summary(cum: Cumulative):
 
     collection.insert_one(cum.__dict__)
     return
+
+
+def daily_process(log_time: str) -> None:
+    """处理指定日所有设备累积数据
+
+    把每台设备每日最后一条记录抽取出来
+    """
+
+    equipment_list = equipment.get_all()
+
+    for item in equipment_list:
+        cum = get_day_last(item.device_serialnumber, log_time)
+        if cum is not None:
+            save_to_summary(cum)
+            print('date: %s, equipment: %s is extract and save' %
+                  (log_time, item.device_serialnumber))
+
+    print('daily process finish')

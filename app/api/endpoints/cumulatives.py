@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, BackgroundTasks
 from typing import Optional
 from app.models.cumulative import Cumulative
 from app import biz
@@ -12,7 +12,6 @@ async def get_day_first(sn: str = Query(..., title="设备序列号"),
     """获取设备当日初始值
     """
 
-    dt = dt + ' 00:00:00'
     cum = biz.cumulative.get_day_first(sn, dt)
 
     return cum
@@ -27,10 +26,19 @@ async def get_day_last(sn: str = Query(..., title="设备序列号"),
     """获取设备当日最终值
     """
 
-    dt = dt + ' 23:59:59'
     cum = biz.cumulative.get_day_last(sn, dt)
 
     if save == 1:
         biz.cumulative.save_to_summary(cum)
 
     return cum
+
+
+@router.get("/daily-process")
+async def daily_process(background_tasks: BackgroundTasks,
+                        dt: str = Query(..., title="日期")):
+    """处理每日累积数据
+    """
+
+    background_tasks.add_task(biz.cumulative.daily_process, dt)
+    return {'message': 'ok'}

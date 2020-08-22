@@ -20,5 +20,3 @@ class Equipment(BaseModel):
     create_time: str
 
     update_time: str
-
-    iccid: str
