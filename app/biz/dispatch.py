@@ -33,8 +33,10 @@ def daily():
     print("start daily process")
 
     prev = datetime.date.today() - datetime.timedelta(days=1)
-    print("prev date is: %s" % prev.__format__("%Y-%m-%d"))
-    # biz.cumulative.daily_process()
+
+    log_time = prev.__format__("%Y-%m-%d")
+    print("prev date is: %s" % log_time)
+    biz.cumulative.daily_process(log_time)
 
     print("finish daily process")
     return
