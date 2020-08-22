@@ -79,7 +79,7 @@ def save_to_summary(cum: Cumulative):
     }).count()
 
     if exist > 0:
-        print('equipment %s summary exist.' % cum.device_serialnumber)
+        # print('equipment %s summary exist.' % cum.device_serialnumber)
         return
 
     collection.insert_one(cum.__dict__)
@@ -98,7 +98,6 @@ def daily_process(log_time: str) -> None:
         cum = get_day_last(item.device_serialnumber, log_time)
         if cum is not None:
             save_to_summary(cum)
-            print('date: %s, equipment: %s is extract and save' %
-                  (log_time, item.device_serialnumber))
+            # print('date: %s, equipment: %s is extract and save' % (log_time, item.device_serialnumber))
 
     print('cumulative biz daily process finish')

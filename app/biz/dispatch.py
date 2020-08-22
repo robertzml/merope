@@ -24,13 +24,13 @@ scheduler = BackgroundScheduler(jobstores=jobstores,
 
 
 def tick():
-    print("This time is: %s" % datetime.now())
+    print("This time is: %s" % datetime.datetime.now())
 
 
 def daily():
     """处理前一天累积值
     """
-    print("start daily process")
+    print("start daily process, %s " % datetime.datetime.now())
 
     prev = datetime.date.today() - datetime.timedelta(days=1)
 
@@ -38,7 +38,7 @@ def daily():
     print("prev date is: %s" % log_time)
     biz.cumulative.daily_process(log_time)
 
-    print("finish daily process")
+    print("finish daily process, %s " % datetime.datetime.now())
     return
 
 
