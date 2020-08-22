@@ -56,3 +56,22 @@ def get_day_last(serial_number: str, log_time: str) -> Cumulative:
     else:
         cum = Cumulative(**data)
         return cum
+
+
+def save_to_summary(cum: Cumulative):
+    """保存设备累积记录到每日汇总表
+    """
+
+    collection = water_heater.get_summary_cumulative()
+
+    exist: int = collection.find({
+        'device_serialnumber': cum.device_serialnumber,
+        'log_time': cum.log_time
+    }).count()
+
+    if exist > 0:
+        print('equipment %s summary exist.' % cum.device_serialnumber)
+        return
+
+    collection.insert_one(cum.__dict__)
+    return
