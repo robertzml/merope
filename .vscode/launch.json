@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: 测试",
+      "type": "python",
+      "request": "launch",
+      "program": "tests/func_test.py",
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Python: 当前文件",
       "type": "python",
       "request": "launch",
@@ -16,7 +23,10 @@
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["app.main:app", "--reload"]
+      "args": [
+        "app.main:app",
+        "--reload"
+      ]
     }
   ]
 }
