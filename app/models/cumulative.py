@@ -15,9 +15,13 @@ class Cumulative(BaseModel):
     cumulative_heat_time: int = Field(..., title="累积加热时间")
 
     cumulative_heat_water: int = Field(..., title="累计使用热水量")
-    cumulative_duration_machine: int
-    cumulative_use_electricity: int
-    cumulative_electricity_saving: int
+
+    cumulative_duration_machine: int = Field(..., title="累计使用时间")
+
+    cumulative_use_electricity: int = Field(..., title="累计用电量")
+
+    cumulative_electricity_saving: int = Field(..., title="累计省电量")
+
     cold_water_input_temp: int
     setting_temp: int
     comprehensive_electricity_saving: int
