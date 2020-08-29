@@ -1,4 +1,5 @@
 from pydantic import Field, BaseModel
+from typing import Optional
 from datetime import date, datetime
 
 
@@ -8,12 +9,15 @@ class EnergySave(BaseModel):
     两天累积数差值
     """
 
+    # 设备序列号
+    serial_number: str = Field('', title="设备序列号")
+
     # 记录日期
     log_date: date = Field(datetime.now().date(), title="记录日期")
 
-    prev_time: datetime = Field(datetime.now(), title="前一时刻")
+    prev_time: Optional[datetime] = Field(None, title="前一时刻")
 
-    curr_time: datetime = Field(datetime.now(), title="当前时刻")
+    curr_time: Optional[datetime] = Field(None, title="当前时刻")
 
     cumulative_heat_time: int = Field(0, title="累积加热时间")
 
@@ -22,3 +26,18 @@ class EnergySave(BaseModel):
     cumulative_electricity_saving: int = Field(0, title="累计省电量")
 
     save_ratio: float = Field(0, title="节能率")
+
+    localtime: Optional[datetime]
+
+    utctime: Optional[datetime]
+
+    def keys(self):
+        return ('serial_number', 'log_date', 'prev_time', 'curr_time',
+                'cumulative_heat_time', 'cumulative_use_electricity',
+                'cumulative_electricity_saving', 'save_ratio', 'localtime',
+                'utctime')
+
+    def __getitem__(self, item):
+        if item == 'log_date':
+            return str(self.log_date)
+        return getattr(self, item)

@@ -3,6 +3,7 @@
 """
 
 import datetime
+import pytz
 from app.db import water_heater
 from app.models.energy_save import EnergySave
 
@@ -18,6 +19,7 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
 
     energy_save = EnergySave()
 
+    energy_save.serial_number = serial_number
     energy_save.log_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
 
     # 前一天
@@ -65,4 +67,30 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
         energy_save.cumulative_electricity_saving /
         (energy_save.cumulative_electricity_saving +
          energy_save.cumulative_use_electricity) * 100, 2)
+
+    energy_save.utctime = datetime.datetime.utcnow()
+    energy_save.localtime = datetime.datetime.now(
+        pytz.timezone('Asia/Shanghai'))
+
     return energy_save
+
+
+def save_to_summary(data: EnergySave) -> None:
+    """保存节能数据到数据库
+
+    Args:
+        data: 节能数据
+    """
+    collection = water_heater.get_summary_save()
+
+    exist: int = collection.find({
+        'serial_number': data.serial_number,
+        'log_date': str(data.log_date)
+    }).count()
+
+    if exist > 0:
+        return
+    else:
+        collection.insert_one(dict(data))
+
+    return
