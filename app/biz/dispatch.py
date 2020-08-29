@@ -36,7 +36,12 @@ def daily():
 
     log_time = prev.__format__("%Y-%m-%d")
     print("prev date is: %s" % log_time)
+
+    # 处理累积值
     biz.cumulative.daily_process(log_time)
+
+    # 处理节能率
+    biz.energy.daily_process(log_time)
 
     print("finish daily process, %s " % datetime.datetime.now())
     return

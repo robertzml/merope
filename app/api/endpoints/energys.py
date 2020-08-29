@@ -20,7 +20,7 @@ async def get_equipment_energy_save(sn: str = Query(..., title="设备序列号"
     if energy_save is None:
         return None
 
-    print(dict(energy_save))
+    # print(dict(energy_save))
 
     if save == 1:
         biz.energy.save_to_summary(energy_save)

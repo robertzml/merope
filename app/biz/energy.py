@@ -68,6 +68,10 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
         'cumulative_use_electricity'] - prev['cumulative_use_electricity']
     energy_save.cumulative_heat_time = today['cumulative_heat_time'] - prev[
         'cumulative_heat_time']
+    energy_save.cumulative_heat_water = today['cumulative_heat_water'] - prev[
+        'cumulative_heat_water']
+    energy_save.cumulative_duration_machine = today[
+        'cumulative_duration_machine'] - prev['cumulative_duration_machine']
 
     if energy_save.cumulative_electricity_saving + energy_save.cumulative_use_electricity == 0:
         energy_save.save_ratio = 0
@@ -117,8 +121,8 @@ def daily_process(log_time: str) -> None:
         es = equipment_energy_save(item.device_serialnumber, log_time)
         if es is not None:
             save_to_summary(es)
-            print('date: %s, equipment: %s energy save ratio save' %
-                  (log_time, es.serial_number))
+            # print('date: %s, equipment: %s energy save ratio save' %
+            #      (log_time, es.serial_number))
 
     print('energy save biz daily process finish')
     return
