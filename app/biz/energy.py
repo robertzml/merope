@@ -6,6 +6,7 @@ import datetime
 import pytz
 from app.db import water_heater
 from app.models.energy_save import EnergySave
+from . import equipment
 
 
 def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
@@ -18,6 +19,8 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
     collection = water_heater.get_summary_cumulative()
 
     energy_save = EnergySave()
+
+    tz = pytz.timezone('Asia/Shanghai')
 
     energy_save.serial_number = serial_number
     energy_save.log_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
@@ -49,12 +52,15 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
     })
 
     if prev is None or today is None:
-        return 0
+        return None
 
     energy_save.prev_time = datetime.datetime.strptime(prev['log_time'],
                                                        "%Y-%m-%d %H:%M:%S")
     energy_save.curr_time = datetime.datetime.strptime(today['log_time'],
                                                        "%Y-%m-%d %H:%M:%S")
+
+    energy_save.prev_time = energy_save.prev_time.replace(tzinfo=tz)
+    energy_save.curr_time = energy_save.curr_time.replace(tzinfo=tz)
 
     energy_save.cumulative_electricity_saving = today[
         'cumulative_electricity_saving'] - prev['cumulative_electricity_saving']
@@ -63,14 +69,15 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
     energy_save.cumulative_heat_time = today['cumulative_heat_time'] - prev[
         'cumulative_heat_time']
 
-    energy_save.save_ratio = round(
-        energy_save.cumulative_electricity_saving /
-        (energy_save.cumulative_electricity_saving +
-         energy_save.cumulative_use_electricity) * 100, 2)
+    if energy_save.cumulative_electricity_saving + energy_save.cumulative_use_electricity == 0:
+        energy_save.save_ratio = 0
+    else:
+        energy_save.save_ratio = round(
+            energy_save.cumulative_electricity_saving /
+            (energy_save.cumulative_electricity_saving +
+             energy_save.cumulative_use_electricity) * 100, 2)
 
     energy_save.utctime = datetime.datetime.utcnow()
-    energy_save.localtime = datetime.datetime.now(
-        pytz.timezone('Asia/Shanghai'))
 
     return energy_save
 
@@ -93,4 +100,25 @@ def save_to_summary(data: EnergySave) -> None:
     else:
         collection.insert_one(dict(data))
 
+    return
+
+
+def daily_process(log_time: str) -> None:
+    """处理指定日所有设备节能率数据
+
+    计算节能率相关数据，保存到数据库
+    Args:
+        log_imte: 日期
+    """
+
+    equipment_list = equipment.get_all()
+
+    for item in equipment_list:
+        es = equipment_energy_save(item.device_serialnumber, log_time)
+        if es is not None:
+            save_to_summary(es)
+            print('date: %s, equipment: %s energy save ratio save' %
+                  (log_time, es.serial_number))
+
+    print('energy save biz daily process finish')
     return

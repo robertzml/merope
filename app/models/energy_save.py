@@ -25,17 +25,18 @@ class EnergySave(BaseModel):
 
     cumulative_electricity_saving: int = Field(0, title="累计省电量")
 
-    save_ratio: float = Field(0, title="节能率")
+    cumulative_heat_water: int = Field(0, title="累计使用热水量")
 
-    localtime: Optional[datetime]
+    cumulative_duration_machine: int = Field(..., title="累计使用时间")
+
+    save_ratio: float = Field(0, title="节能率")
 
     utctime: Optional[datetime]
 
     def keys(self):
         return ('serial_number', 'log_date', 'prev_time', 'curr_time',
                 'cumulative_heat_time', 'cumulative_use_electricity',
-                'cumulative_electricity_saving', 'save_ratio', 'localtime',
-                'utctime')
+                'cumulative_electricity_saving', 'save_ratio', 'utctime')
 
     def __getitem__(self, item):
         if item == 'log_date':
