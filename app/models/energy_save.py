@@ -31,6 +31,8 @@ class EnergySave(BaseModel):
 
     save_ratio: float = Field(0, title="节能率")
 
+    execpt_value: int = Field(0, title='数据异常状态，0表示正常')
+
     utctime: Optional[datetime]
 
     def keys(self):
