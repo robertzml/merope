@@ -31,14 +31,20 @@ async def get_equipment_energy_save(sn: str = Query(..., title="设备序列号"
 
 @router.get('/week-save', response_model=WeekSave)
 async def get_equipment_week_save(sn: str = Query(..., title="设备序列号"),
-                                  week: int = Query(...,
-                                                    title="第几周")) -> WeekSave:
-    """计算设备指定周节能率
+                                  dt: str = Query(..., title="日期"),
+                                  save: Optional[int] = Query(
+                                      None,
+                                      title="是否保存",
+                                      description="1为保存到汇总表")) -> WeekSave:
+    """计算设备上一周节能率
     """
 
-    week_save = biz.week_save.equipment_week_save(sn, week)
+    week_save = biz.week_save.equipment_week_save(sn, dt)
     if week_save is None:
         return None
+
+    if save == 1:
+        biz.week_save.save_to_summary(week_save)
 
     return week_save
 

@@ -12,8 +12,8 @@ class WeekSave(BaseModel):
     # 设备序列号
     serial_number: str = Field('', title="设备序列号")
 
-    # 第几周
-    week: int = Field(0, title="第几周")
+    # 周节能率的最后一天
+    log_date: str = Field('', title="结束日期")
 
     prev_time: Optional[datetime] = Field(None, title="前一时刻")
 
@@ -31,6 +31,6 @@ class WeekSave(BaseModel):
 
     save_ratio: float = Field(0, title="节能率")
 
-    execpt_value: int = Field(0, title='数据异常状态，0表示正常')
+    is_valid: int = Field(0, title='数据异常状态，0表示正常')
 
     utctime: Optional[datetime]

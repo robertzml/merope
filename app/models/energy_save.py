@@ -31,7 +31,7 @@ class EnergySave(BaseModel):
 
     save_ratio: float = Field(0, title="节能率")
 
-    execpt_value: int = Field(0, title='数据异常状态，0表示正常')
+    is_valid: int = Field(0, title='数据异常状态，0表示正常')
 
     utctime: Optional[datetime]
 
@@ -39,7 +39,7 @@ class EnergySave(BaseModel):
         return ('serial_number', 'log_date', 'prev_time', 'curr_time',
                 'cumulative_heat_time', 'cumulative_use_electricity',
                 'cumulative_electricity_saving', 'cumulative_heat_water',
-                'cumulative_duration_machine', 'save_ratio', 'execpt_value',
+                'cumulative_duration_machine', 'save_ratio', 'is_valid',
                 'utctime')
 
     def __getitem__(self, item):
