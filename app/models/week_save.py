@@ -1,19 +1,19 @@
 from pydantic import Field, BaseModel
 from typing import Optional
-from datetime import date, datetime
+from datetime import datetime
 
 
-class EnergySave(BaseModel):
-    """设备节能率模型
+class WeekSave(BaseModel):
+    """设备每周节能率模型
 
-    两天累积数差值
+    上周最后一条和本周最后一条累积数差值
     """
 
     # 设备序列号
     serial_number: str = Field('', title="设备序列号")
 
-    # 记录日期
-    log_date: date = Field(datetime.now().date(), title="记录日期")
+    # 第几周
+    week: int = Field(0, title="第几周")
 
     prev_time: Optional[datetime] = Field(None, title="前一时刻")
 
@@ -34,15 +34,3 @@ class EnergySave(BaseModel):
     execpt_value: int = Field(0, title='数据异常状态，0表示正常')
 
     utctime: Optional[datetime]
-
-    def keys(self):
-        return ('serial_number', 'log_date', 'prev_time', 'curr_time',
-                'cumulative_heat_time', 'cumulative_use_electricity',
-                'cumulative_electricity_saving', 'cumulative_heat_water',
-                'cumulative_duration_machine', 'save_ratio', 'execpt_value',
-                'utctime')
-
-    def __getitem__(self, item):
-        if item == 'log_date':
-            return str(self.log_date)
-        return getattr(self, item)

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query, BackgroundTasks
 from typing import Optional
 from app import biz
 from app.models.energy_save import EnergySave
+from app.models.week_save import WeekSave
 
 router = APIRouter()
 
@@ -26,6 +27,20 @@ async def get_equipment_energy_save(sn: str = Query(..., title="设备序列号"
         biz.energy.save_to_summary(energy_save)
 
     return energy_save
+
+
+@router.get('/week-save', response_model=WeekSave)
+async def get_equipment_week_save(sn: str = Query(..., title="设备序列号"),
+                                  week: int = Query(...,
+                                                    title="第几周")) -> WeekSave:
+    """计算设备指定周节能率
+    """
+
+    week_save = biz.week_save.equipment_week_save(sn, week)
+    if week_save is None:
+        return None
+
+    return week_save
 
 
 @router.get('/daily-process')

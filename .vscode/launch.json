@@ -8,7 +8,7 @@
       "name": "Python: 测试",
       "type": "python",
       "request": "launch",
-      "program": "tests/func_test.py",
+      "program": "pytest",
       "console": "integratedTerminal"
     },
     {

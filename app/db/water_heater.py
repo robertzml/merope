@@ -38,3 +38,12 @@ def get_summary_save():
     db = client.get_database(database)
     collection = db.get_collection('summary_save')
     return collection
+
+
+def get_summary_week_save():
+    """获取周节能率表
+    """
+    client = MongoClient(connection_string)
+    db = client.get_database(database)
+    collection = db.get_collection('summary_week_save')
+    return collection
