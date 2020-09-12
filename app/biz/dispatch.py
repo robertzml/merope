@@ -43,6 +43,12 @@ def daily():
     # 处理节能率
     biz.energy.daily_process(log_time)
 
+    # 处理周节能率
+    if datetime.date.today().weekday() == 0:
+        print("process week save.")
+        biz.week_save.daily_process(
+            datetime.date.today().__format__("%Y-%m-%d"))
+
     print("finish daily process, %s " % datetime.datetime.now())
     return
 

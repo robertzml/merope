@@ -6,6 +6,7 @@ import datetime
 import pytz
 from app.db import water_heater
 from app.models.week_save import WeekSave
+from . import equipment
 
 
 def equipment_week_save(serial_number: str, date: str) -> WeekSave:
@@ -117,4 +118,26 @@ def save_to_summary(data: WeekSave) -> None:
     else:
         collection.insert_one(dict(data))
 
+    return
+
+
+def daily_process(log_time: str) -> None:
+    """处理所有设备周节能率数据
+
+    指定日期的上一周
+    计算节能率相关数据，保存到数据库
+    Args:
+        log_time: 日期
+    """
+
+    equipment_list = equipment.get_all()
+
+    for item in equipment_list:
+        es = equipment_week_save(item.device_serialnumber, log_time)
+        if es is not None:
+            save_to_summary(es)
+            # print('date: %s, equipment: %s energy save ratio save' %
+            #      (log_time, es.serial_number))
+
+    print('week save biz daily process finish')
     return
