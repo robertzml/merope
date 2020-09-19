@@ -57,3 +57,12 @@ async def daily_process(background_tasks: BackgroundTasks,
 
     background_tasks.add_task(biz.energy.daily_process, dt)
     return {"message", "ok"}
+
+
+@router.get('/fix-valid')
+async def fix_valid(dt: str = Query(..., title="日期")):
+    """修复summary-save表 is_valid 字段
+    """
+
+    biz.energy.fix_valid(dt)
+    return {"message": "ok"}

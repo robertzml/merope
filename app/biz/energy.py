@@ -131,3 +131,25 @@ def daily_process(log_time: str) -> None:
 
     print('energy save biz daily process finish')
     return
+
+
+def fix_valid(log_date: str) -> None:
+    """修复设定is_valid值，正常的设定为1
+
+    Args:
+        log_date: 日期
+    """
+    collection = water_heater.get_summary_save()
+
+    for item in collection.find({'log_date': log_date}):
+        id = item['_id']
+        print(id)
+        if item['cumulative_heat_time'] < 0 or item['cumulative_heat_water'] < 0 or \
+                item['cumulative_duration_machine'] < 0 or item['cumulative_use_electricity'] < 0 or \
+                item['cumulative_electricity_saving'] < 0:
+            collection.update_one({'_id': id}, {'$set': {'is_valid': 1}})
+        else:
+            collection.update_one({'_id': id}, {'$set': {'is_valid': 0}})
+
+    print('date {0} is finish'.format(log_date))
+    return
