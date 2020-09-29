@@ -86,6 +86,14 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
             energy_save.cumulative_electricity_saving < 0:
         energy_save.is_valid = 1
 
+    if energy_save.cumulative_heat_water >= 30 and (
+            energy_save.cumulative_electricity_saving <= 0
+            or energy_save.cumulative_use_electricity <= 0):
+        energy_save.is_valid = 2
+
+    if energy_save.cumulative_heat_water < 30:
+        energy_save.is_valid = 3
+
     energy_save.utctime = datetime.datetime.utcnow()
 
     return energy_save
