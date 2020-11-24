@@ -73,6 +73,8 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
     energy_save.cumulative_duration_machine = today[
         'cumulative_duration_machine'] - prev['cumulative_duration_machine']
 
+    energy_save.utctime = datetime.datetime.utcnow()
+
     if energy_save.cumulative_electricity_saving + energy_save.cumulative_use_electricity == 0:
         energy_save.save_ratio = 0
     else:
@@ -85,16 +87,17 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
             energy_save.cumulative_duration_machine < 0 or energy_save.cumulative_use_electricity < 0 or \
             energy_save.cumulative_electricity_saving < 0:
         energy_save.is_valid = 1
+        return energy_save
 
     if energy_save.cumulative_heat_water >= 30 and (
             energy_save.cumulative_electricity_saving <= 0
             or energy_save.cumulative_use_electricity <= 0):
         energy_save.is_valid = 2
+        return energy_save
 
     if energy_save.cumulative_heat_water < 30:
         energy_save.is_valid = 3
-
-    energy_save.utctime = datetime.datetime.utcnow()
+        return energy_save
 
     return energy_save
 
