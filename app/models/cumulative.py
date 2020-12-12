@@ -23,6 +23,9 @@ class Cumulative(BaseModel):
     cumulative_electricity_saving: int = Field(..., title="累计省电量")
 
     cold_water_input_temp: int
+
+    avgcoldtemp: int = Field(..., title="平均冷水进水温度")
+
     setting_temp: int
     comprehensive_electricity_saving: int
     energysave: int = Field(..., title="节能率")
