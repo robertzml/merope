@@ -29,6 +29,8 @@ class WeekSave(BaseModel):
 
     cumulative_duration_machine: int = Field(0, title="累计使用时间")
 
+    avgcoldtemp: int = Field(0, title="平均冷水进水温度")
+
     save_ratio: float = Field(0, title="节能率")
 
     is_valid: int = Field(0, title='数据异常状态，0表示正常')

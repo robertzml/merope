@@ -82,6 +82,9 @@ def equipment_week_save(serial_number: str, date: str) -> WeekSave:
     week_save.cumulative_duration_machine = curr[
         'cumulative_duration_machine'] - prev['cumulative_duration_machine']
 
+    if 'avgcoldtemp' in curr:
+        week_save.avgcoldtemp = curr['avgcoldtemp']
+
     if week_save.cumulative_electricity_saving + week_save.cumulative_use_electricity == 0:
         week_save.save_ratio = 0
     else:

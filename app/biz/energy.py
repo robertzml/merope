@@ -73,6 +73,9 @@ def equipment_energy_save(serial_number: str, date: str) -> EnergySave:
     energy_save.cumulative_duration_machine = today[
         'cumulative_duration_machine'] - prev['cumulative_duration_machine']
 
+    if 'avgcoldtemp' in today:
+        energy_save.avgcoldtemp = today['avgcoldtemp']
+
     energy_save.utctime = datetime.datetime.utcnow()
 
     if energy_save.cumulative_electricity_saving + energy_save.cumulative_use_electricity == 0:
