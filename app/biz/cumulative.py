@@ -67,6 +67,40 @@ def get_day_last(serial_number: str, log_time: str) -> Cumulative:
         return cum
 
 
+def calculateAvgColdTemp(serial_number: str, log_time: str) -> float:
+    """计算每日平均冷水进水温度
+
+    :Parameters:
+        - `serial_number`: 设备序列号.
+        - `log_time`: 日志时间.
+    """
+    collection = water_heater.get_cumulative_collection()
+
+    end = log_time + ' 23:59:59'
+    start = log_time + ' 00:00:00'
+
+    filter = {
+        'device_serialnumber': serial_number,
+        'log_time': {
+            '$gte': start,
+            '$lte': end
+        }
+    }
+    sort = [('log_time', -1)]
+    data = collection.find(filter, sort=sort)
+
+    total = 0
+    count = 0
+    for item in data:
+        total += item['cold_water_input_temp']
+        count += 1
+
+    if count == 0:
+        return 0
+    else:
+        return round(total / count, 2)
+
+
 def save_to_summary(cum: Cumulative):
     """保存设备累积记录到每日汇总表
     """
@@ -97,6 +131,8 @@ def daily_process(log_time: str) -> None:
     for item in equipment_list:
         cum = get_day_last(item.device_serialnumber, log_time)
         if cum is not None:
+            cum.avgcoldtemp = calculateAvgColdTemp(item.device_serialnumber,
+                                                   log_time)
             save_to_summary(cum)
             # print('date: %s, equipment: %s is extract and save' % (log_time, item.device_serialnumber))
 

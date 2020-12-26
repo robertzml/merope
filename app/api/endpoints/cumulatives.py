@@ -34,6 +34,16 @@ async def get_day_last(sn: str = Query(..., title="设备序列号"),
     return cum
 
 
+@router.get("/avg-cold", response_model=float)
+async def get_avg_cold_temp(sn: str = Query(..., title="设备序列号"),
+                            dt: str = Query(..., title="日期")) -> float:
+    """获取设备冷水平均进水温度
+    """
+
+    avg = biz.cumulative.calculateAvgColdTemp(sn, dt)
+    return avg
+
+
 @router.get("/daily-process")
 async def daily_process(background_tasks: BackgroundTasks,
                         dt: str = Query(..., title="日期")):
