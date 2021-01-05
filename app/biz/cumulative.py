@@ -63,6 +63,9 @@ def get_day_last(serial_number: str, log_time: str) -> Cumulative:
     if data is None:
         return None
     else:
+        if 'avgcoldtemp' not in data:
+            data['avgcoldtemp'] = 0
+
         cum = Cumulative(**data)
         return cum
 
